@@ -11,7 +11,7 @@ pipeline {
     }
     stage('Deploy to tomcat') {
       steps {
-        sshagent[('tomcat')] {
+        sshagent(['tomcat']) {
           sh 'scp -o StrictHostKeyChecking=no target/*.war ubuntu@52.90.52.15:/prod/apache-tomcat-8.5.81/webapps/webappT.war'
         }
       }
