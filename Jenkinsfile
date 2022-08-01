@@ -4,6 +4,15 @@ pipeline {
     maven 'maven-3.6.1'
   }
   stages {
+    stage('check git secrets') {
+      steps{
+        sh 'rm trufflehog || true'
+        sh 'docker pull gesellix/trufflehog'
+        sh 'docker run gesellix/trufflehog --json https://github.com/Siddeshwarsid/webapps-tests.git > trufflehog'
+        sh 'cat trufflehog'
+      }
+    }
+    
     stage('build') {
       steps {
         sh 'mvn clean package'
