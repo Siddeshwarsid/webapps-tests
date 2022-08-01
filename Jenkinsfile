@@ -12,7 +12,15 @@ pipeline {
         sh 'cat trufflehog'
       }
     }
-    
+    stage('source composition analysis') {
+      steps {
+        sh 'rm owasp* || true'
+        sh ' wget "https://github.com/Siddeshwarsid/webapps-tests/main/owasp-dependency-check.sh" '
+        sh 'chmod +x owasp-dependency-check.sh'
+        sh 'bash owasp-dependency-check.sh'
+      }
+    }
+        
     stage('build') {
       steps {
         sh 'mvn clean package'
