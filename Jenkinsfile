@@ -12,20 +12,31 @@ pipeline {
         sh 'cat trufflehog'
       }
     }
-    stage('source composition analysis') {
+//     stage('source composition analysis') {
+//       steps {
+//         sh 'rm owasp* || true'
+//         sh ' wget "https://raw.githubusercontent.com//Siddeshwarsid/webapps-tests/main/owasp-dependency-check.sh" '
+//         sh 'chmod +x owasp-dependency-check.sh'
+//         sh 'bash owasp-dependency-check.sh'
+//       }
+//     }
+    stage('test') {
       steps {
-        sh 'rm owasp* || true'
-        sh ' wget "https://raw.githubusercontent.com//Siddeshwarsid/webapps-tests/main/owasp-dependency-check.sh" '
-        sh 'chmod +x owasp-dependency-check.sh'
-        sh 'bash owasp-dependency-check.sh'
+        sh 'mvn test'
+      }
+      post {
+        always {
+          junit allowEmptyResults:true, testResults: 'target/surefire-reports/*.xml'
+        }
       }
     }
-        
+    
     stage('build') {
       steps {
         sh 'mvn clean package'
       }
     }
+    
     stage('Deploy to tomcat') {
       steps {
         sshagent(['tomcat']) {
